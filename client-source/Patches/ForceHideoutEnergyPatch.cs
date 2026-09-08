@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Linq;
 using System.Reflection;
 using Comfort.Common;
 using EFT.Hideout;
@@ -54,7 +52,7 @@ internal class ForceHideoutEnergyPatch : ModulePatch
     {
         try
         {
-            var hideout = Singleton<HideoutClass>.Instance;
+            var hideout = Singleton<HideoutRepresentation>.Instance;
             if (hideout?.EnergyController == null)
             {
                 Plugin.Log.LogInfo($"Ambiance refresh skipped ({reason}): Hideout/EnergyController unavailable.");
@@ -111,7 +109,7 @@ internal class ForceHideoutEnergyPatch : ModulePatch
 
         try
         {
-            var hideout = Singleton<HideoutClass>.Instance;
+            var hideout = Singleton<HideoutRepresentation>.Instance;
             if (hideout == null)
             {
                 return false;

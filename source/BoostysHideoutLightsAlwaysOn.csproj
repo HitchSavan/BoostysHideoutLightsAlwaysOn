@@ -1,45 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <AssemblyName>BoostysHideoutLightsAlwaysOn</AssemblyName>
-    <RootNamespace>BoostysHideoutLightsAlwaysOn</RootNamespace>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <AssemblyName>BoostysHideoutLightsAlwaysOn</AssemblyName>
+        <RootNamespace>BoostysHideoutLightsAlwaysOn</RootNamespace>
+        <Version>1.0.1</Version>
+        <AssemblyVersion>1.0.1.0</AssemblyVersion>
+        <FileVersion>1.0.1.0</FileVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(SptRoot)' == '' and Exists('$(MSBuildThisFileDirectory)..\\..\\..\\..\\SPTarkov.Server.Core.dll')">
-    <SptRoot>$(MSBuildThisFileDirectory)..\..\..\..</SptRoot>
-  </PropertyGroup>
+    <PropertyGroup>
+        <SptRoot>$(ProjectDir)..\..\..</SptRoot>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(ServerAssembliesRoot)' == '' and Exists('$(SptRoot)\\SPTarkov.Server.Core.dll')">
-    <ServerAssembliesRoot>$(SptRoot)</ServerAssembliesRoot>
-  </PropertyGroup>
+    <PropertyGroup
+        Condition="'$(ServerAssembliesRoot)' == '' and Exists('$(SptRoot)\\SPT_Runtime\\SPTarkov.Server.Core.dll')">
+        <ServerAssembliesRoot>$(SptRoot)\SPT_Runtime</ServerAssembliesRoot>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(ServerAssembliesRoot)' == '' and Exists('$(SptRoot)\\SPT\\SPTarkov.Server.Core.dll')">
-    <ServerAssembliesRoot>$(SptRoot)\SPT</ServerAssembliesRoot>
-  </PropertyGroup>
+    <Target Name="ValidateSptRoot" BeforeTargets="ResolveReferences">
+        <Error Condition="'$(SptRoot)' == ''"
+            Text="SPT root not found. Build with: dotnet build -p:SptRoot=C:\Path\To\SPT" />
+        <Error Condition="'$(ServerAssembliesRoot)' == ''"
+            Text="$([System.IO.Path]::GetFullPath($(SptRoot))); Server assemblies not found. Expected SPTarkov.Server.Core.dll at %SptRoot% or %SptRoot%\\SPT_Runtime." />
+    </Target>
 
-  <Target Name="ValidateSptRoot" BeforeTargets="ResolveReferences">
-    <Error Condition="'$(SptRoot)' == ''" Text="SPT root not found. Build with: dotnet build -p:SptRoot=C:\Path\To\SPT" />
-    <Error Condition="'$(ServerAssembliesRoot)' == ''" Text="Server assemblies not found. Expected SPTarkov.Server.Core.dll at %SptRoot% or %SptRoot%\\SPT." />
-  </Target>
-
-  <ItemGroup>
-    <Reference Include="SPTarkov.Server.Core">
-      <HintPath>$(ServerAssembliesRoot)\SPTarkov.Server.Core.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="SPTarkov.DI">
-      <HintPath>$(ServerAssembliesRoot)\SPTarkov.DI.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="SemanticVersioning">
-      <HintPath>$(ServerAssembliesRoot)\SemanticVersioning.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="SPTarkov.Common" Version="4.1.0" />
+        <PackageReference Include="SPTarkov.DI" Version="4.1.0" />
+        <PackageReference Include="SPTarkov.Server.Core" Version="4.1.0" />
+    </ItemGroup>
 </Project>
